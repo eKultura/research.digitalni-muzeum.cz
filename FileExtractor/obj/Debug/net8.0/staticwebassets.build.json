@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "JLRceBR7yjeGDqgznZ+Vs6pGcpo5CURZGgsJLJsxNIg=",
+  "Source": "FileExtractor",
+  "BasePath": "_content/FileExtractor",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
