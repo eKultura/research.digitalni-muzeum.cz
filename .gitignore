@@ -1,13 +1,15 @@
 # Build results
 bin/
 obj/
+*.log
 
-# User-specific files
+# VS and tooling
+.vs/
 *.user
 *.suo
+*.cache
+*.ide
 
-# Visual Studio folder
-.vs/
-
-# Logs
-*.log
+# NuGet / Restore
+project.assets.json
+*.nuget.cache
