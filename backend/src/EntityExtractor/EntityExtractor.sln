@@ -4,6 +4,10 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityExtractor.Web", "EntityExtractor.Web\EntityExtractor.Web.csproj", "{8F6AF115-E870-4BDA-A358-F7B2982F3E67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityExtractor.Contracts", "EntityExtractor.Contracts\EntityExtractor.Contracts.csproj", "{AA8D5DA0-5D54-42E9-B107-60426922544F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityExtractor.Domain", "EntityExtractor.Domain\EntityExtractor.Domain.csproj", "{DE7E7222-BCC6-4910-91BF-610866D559C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +18,14 @@ Global
 		{8F6AF115-E870-4BDA-A358-F7B2982F3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6AF115-E870-4BDA-A358-F7B2982F3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6AF115-E870-4BDA-A358-F7B2982F3E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8D5DA0-5D54-42E9-B107-60426922544F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8D5DA0-5D54-42E9-B107-60426922544F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8D5DA0-5D54-42E9-B107-60426922544F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8D5DA0-5D54-42E9-B107-60426922544F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
