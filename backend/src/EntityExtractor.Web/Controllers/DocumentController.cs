@@ -1,13 +1,60 @@
-﻿using EntityExtractor.Models;
+﻿using EntityExtractor.Contracts;
+using EntityExtractor.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
 
 namespace EntityExtractor.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class FileLoaderController : ControllerBase
+[Route("api/v1/documents")]
+public class DocumentController : ControllerBase
 {
     private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+    private readonly ConcurrentDictionary<string, TokenizedFile> _files = new();
+
+    [HttpPost]
+    [Route("upload")]
+    public Task<IActionResult> Upload(IFormFile file)
+    {
+        // Mock implementation
+        var mockedTokens = new List<IEnumerable<string>>
+        {
+            new List<string>
+            {
+                "Alexandre", "Dumas", "Count", "Monte", "Cristo", "Edmond", "Dantes"
+            },
+            new List<string>
+            {
+               "Château", "d'If", "prison", "Marseille"
+            }
+        };
+
+        var tokenizedFile = new TokenizedFile(FileId.Create(), file.FileName, mockedTokens);
+
+        _files.AddOrUpdate(tokenizedFile.FileId.Id, tokenizedFile, (id, file) => file);
+
+        IActionResult result = CreatedAtAction(nameof(GetFile), new { id = tokenizedFile.FileId.Id });
+        return Task.FromResult(result);
+    }
+
+    [HttpGet]
+    [Route("{fileId}")]
+    public Task<IActionResult> GetFile(string fileId)
+    {
+        IActionResult result;
+
+        if (!_files.TryGetValue(fileId, out var file))
+        {
+            result = NotFound();
+        }
+        else
+        {
+            result = Ok(file);
+        }
+
+        return Task.FromResult(result);
+    }
 
     [HttpGet]
     public ActionResult<IEnumerable<FileModel>> GetFiles([FromQuery] string path)
