@@ -11,7 +11,7 @@ namespace EntityExtractor.Controllers;
 public class DocumentController : ControllerBase
 {
     private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-    private readonly ConcurrentDictionary<string, TokenizedFile> _files = new();
+    private static readonly ConcurrentDictionary<string, TokenizedFile> _files = new();
 
     [HttpPost]
     [Route("upload")]
@@ -34,7 +34,7 @@ public class DocumentController : ControllerBase
 
         _files.AddOrUpdate(tokenizedFile.FileId.Id, tokenizedFile, (id, file) => file);
 
-        IActionResult result = CreatedAtAction(nameof(GetFile), new { id = tokenizedFile.FileId.Id });
+        IActionResult result = Created($"api/v1/documents/{tokenizedFile.FileId.Id}", tokenizedFile);
         return Task.FromResult(result);
     }
 
