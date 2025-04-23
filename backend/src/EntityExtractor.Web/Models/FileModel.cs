@@ -1,4 +1,4 @@
-﻿namespace EntityExtractor.Models;
+﻿namespace eKultura.EntityExtractor.Models;
 
 public class FileModel
 {
