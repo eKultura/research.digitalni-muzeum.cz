@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text;
-using UglyToad.PdfPig;
+using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 
 namespace eKultura.EntityExtractor.Domain.PdfReading;
 
@@ -15,28 +15,33 @@ public class PdfTextReader
         _logger = logger;
     }
 
-    public Task<string> ReadTextAsync(MemoryStream stream)
+    public Task<PdfDocument> ReadTextAsync(MemoryStream stream)
     {
         _logger.LogInformation("Attempting to open the memory stream for reading.");
 
-        using var pdf = PdfDocument.Open(stream);      
+        using var pdf = PdfPigDocument.Open(stream);      
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
         StringBuilder stringBuilder = new StringBuilder();
-        int pageCount = 1;
+        int pageCount = 0;
+        int wordCount = 0;
 
         foreach (var page in pdf.GetPages())
         {
+            pageCount++;
+
             var wordsOnPage = page.GetWords().Select(w => w.Text);
+            wordCount += wordsOnPage.Count();
+
             string pageString = string.Join(SpaceDelimiter, wordsOnPage);
 
-            stringBuilder.Append(pageString);
-            pageCount++;
+            stringBuilder.Append(pageString);            
         }
 
-        _logger.LogInformation("Successfully read {PageCount} pages of the pdf document.", pageCount);
+        _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.", 
+            wordCount, pageCount);
 
-        return Task.FromResult(stringBuilder.ToString());
+        return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString()));
     }
 }
