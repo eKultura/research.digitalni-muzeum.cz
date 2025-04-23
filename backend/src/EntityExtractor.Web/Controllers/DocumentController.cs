@@ -1,10 +1,9 @@
-﻿using EntityExtractor.Contracts;
-using EntityExtractor.Models;
+﻿using eKultura.EntityExtractor.Contracts;
+using eKultura.EntityExtractor.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
 
-namespace EntityExtractor.Controllers;
+namespace eKultura.EntityExtractor.Controllers;
 
 [ApiController]
 [Route("api/v1/documents")]

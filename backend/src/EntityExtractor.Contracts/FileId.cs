@@ -1,4 +1,4 @@
-﻿namespace EntityExtractor.Contracts;
+﻿namespace eKultura.EntityExtractor.Contracts;
 
 public record FileId
 {
