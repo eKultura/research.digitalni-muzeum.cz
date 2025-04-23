@@ -1,13 +1,59 @@
-﻿using EntityExtractor.Models;
+﻿using eKultura.EntityExtractor.Contracts;
+using eKultura.EntityExtractor.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
 
-namespace EntityExtractor.Controllers;
+namespace eKultura.EntityExtractor.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class FileLoaderController : ControllerBase
+[Route("api/v1/documents")]
+public class DocumentController : ControllerBase
 {
     private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+    private static readonly ConcurrentDictionary<string, TokenizedFile> _files = new();
+
+    [HttpPost]
+    [Route("upload")]
+    public Task<IActionResult> Upload(IFormFile file)
+    {
+        // Mock implementation
+        var mockedTokens = new List<IEnumerable<string>>
+        {
+            new List<string>
+            {
+                "Alexandre", "Dumas", "Count", "Monte", "Cristo", "Edmond", "Dantes"
+            },
+            new List<string>
+            {
+               "Château", "d'If", "prison", "Marseille"
+            }
+        };
+
+        var tokenizedFile = new TokenizedFile(FileId.Create(), file.FileName, mockedTokens);
+
+        _files.AddOrUpdate(tokenizedFile.FileId.Id, tokenizedFile, (id, file) => file);
+
+        IActionResult result = Created($"api/v1/documents/{tokenizedFile.FileId.Id}", tokenizedFile);
+        return Task.FromResult(result);
+    }
+
+    [HttpGet]
+    [Route("{fileId}")]
+    public Task<IActionResult> GetFile(string fileId)
+    {
+        IActionResult result;
+
+        if (!_files.TryGetValue(fileId, out var file))
+        {
+            result = NotFound();
+        }
+        else
+        {
+            result = Ok(file);
+        }
+
+        return Task.FromResult(result);
+    }
 
     [HttpGet]
     public ActionResult<IEnumerable<FileModel>> GetFiles([FromQuery] string path)
