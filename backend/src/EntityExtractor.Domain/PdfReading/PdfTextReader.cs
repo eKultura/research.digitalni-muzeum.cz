@@ -15,7 +15,7 @@ public class PdfTextReader
         _logger = logger;
     }
 
-    public Task<string> ReadAsync(MemoryStream stream)
+    public Task<string> ReadTextAsync(MemoryStream stream)
     {
         _logger.LogInformation("Attempting to open the memory stream for reading.");
 
