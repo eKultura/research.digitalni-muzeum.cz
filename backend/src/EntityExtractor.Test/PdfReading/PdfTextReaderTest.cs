@@ -103,8 +103,8 @@ public class PdfTextReaderTest
 
         yield return new object[]
         {
-            new string[] 
-            { 
+            new string[]
+            {
                 "This page intentionally left blank",
                 "But it wasn't really blank, was it?"
             },

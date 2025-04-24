@@ -6,8 +6,8 @@ using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 
 namespace eKultura.EntityExtractor.Domain.PdfReading;
 
-public class PdfTextReader
-{   
+public class PdfTextReader : IPdfTextReader
+{
     private readonly ILogger<PdfTextReader> _logger;
 
     public PdfTextReader(ILogger<PdfTextReader> logger)
@@ -19,7 +19,7 @@ public class PdfTextReader
     {
         _logger.LogInformation("Attempting to open the memory stream for reading.");
 
-        using var pdf = OpenDocument(stream);      
+        using var pdf = OpenDocument(stream);
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
@@ -39,7 +39,7 @@ public class PdfTextReader
             stringBuilder.Append(pageString + PdfReadingConstants.SpaceDelimiter);
         }
 
-        _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.", 
+        _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.",
             wordCount, pageCount);
 
         return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
