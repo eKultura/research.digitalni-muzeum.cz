@@ -7,9 +7,7 @@ using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 namespace eKultura.EntityExtractor.Domain.PdfReading;
 
 public class PdfTextReader
-{
-    private const char SpaceDelimiter = ' ';
-
+{   
     private readonly ILogger<PdfTextReader> _logger;
 
     public PdfTextReader(ILogger<PdfTextReader> logger)
@@ -36,15 +34,15 @@ public class PdfTextReader
             var wordsOnPage = page.GetWords().Select(w => w.Text);
             wordCount += wordsOnPage.Count();
 
-            string pageString = string.Join(SpaceDelimiter, wordsOnPage);
+            string pageString = string.Join(PdfReadingConstants.SpaceDelimiter, wordsOnPage);
 
-            stringBuilder.Append(pageString);            
+            stringBuilder.Append(pageString + PdfReadingConstants.SpaceDelimiter);
         }
 
         _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.", 
             wordCount, pageCount);
 
-        return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString()));
+        return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
     }
 
     private static PdfPigDocument OpenDocument(MemoryStream stream)
