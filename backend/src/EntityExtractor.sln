@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityExtractor.Test", "EntityExtractor.Test\EntityExtractor.Test.csproj", "{655DD9B1-F05A-431D-8362-C5A36FAD1F0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE7E7222-BCC6-4910-91BF-610866D559C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{655DD9B1-F05A-431D-8362-C5A36FAD1F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{655DD9B1-F05A-431D-8362-C5A36FAD1F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{655DD9B1-F05A-431D-8362-C5A36FAD1F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{655DD9B1-F05A-431D-8362-C5A36FAD1F0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
