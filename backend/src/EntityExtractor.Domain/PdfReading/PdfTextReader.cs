@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PdfSharpCore.Pdf.IO;
 using System.Text;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Exceptions;
 using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
@@ -19,32 +20,20 @@ public class PdfTextReader : IPdfTextReader
 
     public Task<TextDocument> ReadTextAsync(PdfDocument pdfDocument)
     {
-        _logger.LogInformation("Attempting to open the memory stream for reading.");
+        _logger.LogInformation("Attempting to open the memory stream for reading of {DocumentName}.", pdfDocument.Name);
 
         using var pdf = OpenDocument(pdfDocument.DocumentStream);
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
-        StringBuilder stringBuilder = new StringBuilder();
-        int pageCount = 0;
-        int wordCount = 0;
+        var textDocumentPages = pdf.GetPages()
+            .Select(p => new TextDocumentPage(p.Number, p.Text))
+            .ToList();
 
-        foreach (var page in pdf.GetPages())
-        {
-            pageCount++;
+        _logger.LogInformation("Successfully read {PageCount} pages of {DocumentName}.",
+            pdf.NumberOfPages, pdfDocument.Name);
 
-            var wordsOnPage = page.GetWords().Select(w => w.Text);
-            wordCount += wordsOnPage.Count();
-
-            string pageString = string.Join(DocumentReadingConstants.SpaceDelimiter, wordsOnPage);
-
-            stringBuilder.Append(pageString + DocumentReadingConstants.SpaceDelimiter);
-        }
-
-        _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.",
-            wordCount, pageCount);
-
-        return Task.FromResult(new TextDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
+        return Task.FromResult(new TextDocument(pdfDocument.Name, textDocumentPages, pdfDocument.Topic));
     }
 
     public IEnumerable<string> ExtractPageLabels(MemoryStream stream)

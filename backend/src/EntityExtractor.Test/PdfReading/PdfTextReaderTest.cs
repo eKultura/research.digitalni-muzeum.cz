@@ -52,9 +52,9 @@ public class PdfTextReaderTest
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(0, result.PageCount);
-        Assert.Equal(0, result.WordCount);
-        Assert.Empty(result.Text);
+        Assert.Equal(pdfDocument.Name, result.Name);
+        Assert.Equal(pdfDocument.Topic, result.Topic);
+        Assert.Empty(result.Pages);
     }
 
     [Theory]
@@ -80,9 +80,21 @@ public class PdfTextReaderTest
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(pages.Length, result.PageCount);
-        Assert.Equal(wordCount, result.WordCount);
-        Assert.Equal(text, result.Text);
+        Assert.Equal(pdfDocument.Name, result.Name);
+        Assert.Equal(pdfDocument.Topic, result.Topic);
+
+        Assert.Equal(pages.Length, result.Pages.Count);
+
+        var resultPages = result.Pages;
+
+        for (int i = 0; i < resultPages.Count; i++)
+        {
+            var textPage = resultPages[i];
+
+            //PDF pages start from 1
+            Assert.Equal(i + 1, textPage.Number);
+            Assert.Equal(pages[i], result.Pages[i].Text);
+        }
     }
 
     private static byte[] BuildPdf(string[] pages)
