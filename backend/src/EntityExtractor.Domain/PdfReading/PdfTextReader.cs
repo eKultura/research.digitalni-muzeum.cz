@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using eKultura.EntityExtractor.Contracts;
+using Microsoft.Extensions.Logging;
+using PdfSharpCore.Pdf.IO;
 using System.Text;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Exceptions;
@@ -15,11 +17,11 @@ public class PdfTextReader : IPdfTextReader
         _logger = logger;
     }
 
-    public Task<PdfDocument> ReadTextAsync(MemoryStream stream)
+    public Task<TextDocument> ReadTextAsync(PdfDocument pdfDocument)
     {
         _logger.LogInformation("Attempting to open the memory stream for reading.");
 
-        using var pdf = OpenDocument(stream);
+        using var pdf = OpenDocument(pdfDocument.DocumentStream);
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
@@ -34,15 +36,41 @@ public class PdfTextReader : IPdfTextReader
             var wordsOnPage = page.GetWords().Select(w => w.Text);
             wordCount += wordsOnPage.Count();
 
-            string pageString = string.Join(PdfReadingConstants.SpaceDelimiter, wordsOnPage);
+            string pageString = string.Join(DocumentReadingConstants.SpaceDelimiter, wordsOnPage);
 
-            stringBuilder.Append(pageString + PdfReadingConstants.SpaceDelimiter);
+            stringBuilder.Append(pageString + DocumentReadingConstants.SpaceDelimiter);
         }
 
         _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.",
             wordCount, pageCount);
 
-        return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
+        return Task.FromResult(new TextDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
+    }
+
+    public IEnumerable<string> ExtractPageLabels(MemoryStream stream)
+    {
+        using var pdfMetadata = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+
+        var labels = pdfMetadata.Internals.Catalog.Elements.GetDictionary(DocumentReadingConstants.PageLabelsElementName);
+
+        if (labels is null)
+        {
+            yield break;
+        }
+
+        var nums = labels.Elements.GetArray(DocumentReadingConstants.NumbersElementName);
+
+        if (nums is null)
+        {
+            yield break;
+        }
+
+
+
+        //foreach (var keke in pdfMetadata.Internals.Catalog.Elements)
+        //{
+        //    keke.Value.
+        //}
     }
 
     private static PdfPigDocument OpenDocument(MemoryStream stream)

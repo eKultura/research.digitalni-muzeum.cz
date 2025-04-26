@@ -1,4 +1,5 @@
-﻿using eKultura.EntityExtractor.Domain.PdfReading;
+﻿using eKultura.EntityExtractor.Contracts;
+using eKultura.EntityExtractor.Domain.PdfReading;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Xml.Linq;
 using UglyToad.PdfPig.Content;
@@ -26,8 +27,10 @@ public class PdfTextReaderTest
 
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Root Doc", memoryStream, "Sci-fi");
+
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(memoryStream));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(pdfDocument));
     }
 
     [Fact]
@@ -42,8 +45,10 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Empty Doc", memoryStream, "Empty");
+
         // Act
-        var result = await _pdfReader.ReadTextAsync(memoryStream);
+        var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);
@@ -59,17 +64,19 @@ public class PdfTextReaderTest
         // Arrange        
         using var memoryStream = new MemoryStream();
 
-        var words = pages.Select(p => p.Split(PdfReadingConstants.SpaceDelimiter)).SelectMany(p => p);
+        var words = pages.Select(p => p.Split(DocumentReadingConstants.SpaceDelimiter)).SelectMany(p => p);
         int wordCount = words.Count();
-        string text = string.Join(PdfReadingConstants.SpaceDelimiter, words);
+        string text = string.Join(DocumentReadingConstants.SpaceDelimiter, words);
 
         byte[] pdfDoc = BuildPdf(pages);
 
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream, "Fiction");
+
         // Act
-        var result = await _pdfReader.ReadTextAsync(memoryStream);
+        var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);

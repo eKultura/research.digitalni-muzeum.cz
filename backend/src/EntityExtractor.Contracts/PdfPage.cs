@@ -1,9 +1,7 @@
-﻿using eKultura.EntityExtractor.Contracts;
-
-namespace eKultura.EntityExtractor.Domain.PdfReading;
+﻿namespace eKultura.EntityExtractor.Contracts;
 
 /// <summary>
-/// Represents a page in a PDF document
+/// Represents a page in a the document
 /// </summary>
 /// <param name="Number">Number of the page</param>
 /// <param name="Words">A list of words on the page</param>
