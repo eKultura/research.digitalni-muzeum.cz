@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from 'axios';
+import FolderCreator from "./FolderCreator";
 
 export default function FileUploader() {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
@@ -27,11 +28,12 @@ export default function FileUploader() {
     }
   }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <form onSubmit={handleFileSubmit}>
+  return (       
+    <div className="flex flex-col items-center justify-center">        
+      <form onSubmit={handleFileSubmit}>      
         <div className="flex flex-col gap-y-4">
-          <div className="flex items-center justify-center w-full mt-5">
+        <div className="text-lg font-medium">Nahrání souboru</div>         
+          <div className="flex items-center justify-center w-full">
             <label
               htmlFor="dropzone-file"
               className="flex flex-col items-center justify-center p-3 w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-[#ffffff] hover:bg-[#f9f9f9]"
@@ -70,8 +72,9 @@ export default function FileUploader() {
               />
             </label>
           </div>
+          <FolderCreator />
           <button className="py-3 w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-center cursor-pointer">
-            Submit
+            Potvrdit
           </button>
           {isFileUploaded && <div className="flex flex-col gap-y-1 w-full">
             <p className="text-center text-blue-800 text-sm">Soubor nahraný</p>
