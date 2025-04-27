@@ -1,8 +1,6 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using Microsoft.Extensions.Logging;
 using PdfSharpCore.Pdf.IO;
-using System.Text;
-using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Exceptions;
 using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
@@ -27,7 +25,11 @@ public class PdfTextReader : IPdfTextReader
         _logger.LogInformation("Starting reading process of the memory stream.");
 
         var textDocumentPages = pdf.GetPages()
-            .Select(p => new TextDocumentPage(p.Number, p.Text))
+            .Select(p => new { p.Number, p.Text })
+            .Join(ExtractPageLabels(pdfDocument.DocumentStream), 
+                doc => doc.Number,
+                label => label.Key,
+                (doc, label) => new TextDocumentPage(doc.Number, doc.Text, label.Value))
             .ToList();
 
         _logger.LogInformation("Successfully read {PageCount} pages of {DocumentName}.",
@@ -36,30 +38,11 @@ public class PdfTextReader : IPdfTextReader
         return Task.FromResult(new TextDocument(pdfDocument.Name, textDocumentPages, pdfDocument.Topic));
     }
 
-    public IEnumerable<string> ExtractPageLabels(MemoryStream stream)
+    public IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
     {
         using var pdfMetadata = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
 
-        var labels = pdfMetadata.Internals.Catalog.Elements.GetDictionary(DocumentReadingConstants.PageLabelsElementName);
-
-        if (labels is null)
-        {
-            yield break;
-        }
-
-        var nums = labels.Elements.GetArray(DocumentReadingConstants.NumbersElementName);
-
-        if (nums is null)
-        {
-            yield break;
-        }
-
-
-
-        //foreach (var keke in pdfMetadata.Internals.Catalog.Elements)
-        //{
-        //    keke.Value.
-        //}
+        return pdfMetadata.GetPageLabels();
     }
 
     private static PdfPigDocument OpenDocument(MemoryStream stream)

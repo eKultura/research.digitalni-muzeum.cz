@@ -1,6 +1,7 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using eKultura.EntityExtractor.Domain.PdfReading;
 using Microsoft.Extensions.Logging.Abstractions;
+using PdfSharpCore.Pdf.IO;
 using System.Xml.Linq;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;

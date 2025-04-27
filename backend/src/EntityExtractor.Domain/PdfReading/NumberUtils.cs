@@ -1,6 +1,7 @@
 ﻿using System.Text;
 
 namespace eKultura.EntityExtractor.Domain.PdfReading;
+
 public static class NumberUtils
 {
     private const int EnglishAlphabetCharacterCount = 26;

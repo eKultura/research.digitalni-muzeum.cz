@@ -7,6 +7,11 @@ namespace eKultura.EntityExtractor.Domain.PdfReading;
 
 public static class PdfSharpDocumentExtensions
 {
+    /// <summary>
+    /// Returns key-value pairs for physical and label page numbers.
+    /// </summary>
+    /// <param name="document">A PDF Sharp Document</param>
+    /// <returns>A collection of physical page numbers and their labels</returns>
     public static IEnumerable<KeyValuePair<int, string>> GetPageLabels(this PdfSharpDocument document)
     {
         var pageLabelsDictionary = document.Internals.Catalog.Elements.GetDictionary(DocumentReadingConstants.PageLabelsElementName);
