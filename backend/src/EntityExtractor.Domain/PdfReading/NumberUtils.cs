@@ -6,22 +6,10 @@ public static class NumberUtils
 {
     private const int EnglishAlphabetCharacterCount = 26;
 
-    private static readonly IReadOnlyDictionary<int, string> RomanNumerals = new Dictionary<int, string>
-    {
-        { 1000, "M" },
-        { 900, "CM" },
-        { 500, "D" },
-        { 400, "CD" },
-        { 100, "C" },
-        { 90, "XC" },
-        { 50, "L" },
-        { 40, "XL" },
-        { 10, "X" },
-        { 9, "IX" },
-        { 5, "V" },
-        { 4, "IV" },
-        { 1, "I" }
-    };
+    private static readonly string[] RomanThousands = new[] { "", "M", "MM", "MMM" };
+    private static readonly string[] RomanHundreds = new[] { "", "C", "CC", "CCC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
+    private static readonly string[] RomanTens = new[] { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
+    private static readonly string[] RomanOnes = new[] { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
 
     /// <summary>
     /// Converts a string to roman number
@@ -30,23 +18,8 @@ public static class NumberUtils
     /// <returns>A string representing integer in a roman form. Empty string if the number is not a positive integer.</returns>
     public static string ToRoman(int number)
     {
-        if (number <= 0)
-        {
-            return string.Empty;
-        }
-
-        var result = new StringBuilder();
-
-        foreach (var numeral in RomanNumerals)
-        {
-            while (number >= numeral.Key)
-            {
-                result.Append(numeral.Value);
-                number -= numeral.Key;
-            }
-        }
-
-        return result.ToString();
+        return RomanThousands[number/ 1000] + RomanHundreds[(number % 1000) / 100]
+            + RomanTens[(number % 100) / 10] + RomanOnes[number % 10];
     }
 
     /// <summary>
