@@ -21,15 +21,15 @@ public static class PdfSharpDocumentExtensions
         {
             return Enumerable.Empty<KeyValuePair<int, string>>();
         }
-      
+
         var segments = GetNumericSegments(numberTree.Elements)
             .OrderBy(s => s.startIndex)
             .ToList();
 
         return ProcessNumericSegments(segments, document.PageCount);
-    }  
+    }
 
-    private static IEnumerable<KeyValuePair<int, string>>  ProcessNumericSegments(List<(int startIndex, PdfDictionary labelDict)> segments,
+    private static IEnumerable<KeyValuePair<int, string>> ProcessNumericSegments(List<(int startIndex, PdfDictionary labelDict)> segments,
         int documentPages)
     {
         for (int segmentIndex = 0; segmentIndex < segments.Count; segmentIndex++)
@@ -84,6 +84,6 @@ public static class PdfSharpDocumentExtensions
             "/A" => NumberUtils.ToLetters(number).ToUpper(),
             "/a" => NumberUtils.ToLetters(number).ToLower(),
             _ => string.Empty
-        };      
+        };
     }
 }

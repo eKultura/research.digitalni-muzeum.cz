@@ -26,7 +26,7 @@ public class PdfTextReader : IPdfTextReader
 
         var textDocumentPages = pdf.GetPages()
             .Select(p => new { p.Number, p.Text })
-            .Join(ExtractPageLabels(pdfDocument.DocumentStream), 
+            .Join(ExtractPageLabels(pdfDocument.DocumentStream),
                 doc => doc.Number,
                 label => label.Key,
                 (doc, label) => new TextDocumentPage(doc.Number, doc.Text, label.Value))

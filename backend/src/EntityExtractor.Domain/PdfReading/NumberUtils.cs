@@ -18,7 +18,7 @@ public static class NumberUtils
     /// <returns>A string representing integer in a roman form. Empty string if the number is not a positive integer.</returns>
     public static string ToRoman(int number)
     {
-        return RomanThousands[number/ 1000] + RomanHundreds[(number % 1000) / 100]
+        return RomanThousands[number / 1000] + RomanHundreds[(number % 1000) / 100]
             + RomanTens[(number % 100) / 10] + RomanOnes[number % 10];
     }
 
