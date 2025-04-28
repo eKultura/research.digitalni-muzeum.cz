@@ -1,6 +1,7 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using Microsoft.Extensions.Logging;
 using PdfSharpCore.Pdf.IO;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Exceptions;
 using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
@@ -9,6 +10,8 @@ namespace eKultura.EntityExtractor.Domain.PdfReading;
 
 public class PdfTextReader : IPdfTextReader
 {
+    private const double ProportionOfPageBelongingToHeader = 0.1;
+
     private readonly ILogger<PdfTextReader> _logger;
 
     public PdfTextReader(ILogger<PdfTextReader> logger)
@@ -24,21 +27,28 @@ public class PdfTextReader : IPdfTextReader
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
-        var textDocumentPages = pdf.GetPages()
-            .Select(p => new { p.Number, p.Text })
+        var pages = pdf.GetPages()
+            .Select(p => new 
+            {
+                PageNumber = p.Number,
+                Text = string.Join(DocumentReadingConstants.SpaceDelimiter,
+                    p.GetWords()
+                    .Where(w => !BelongsToHeader(p, w))
+                    .Select(w => w.Text))
+            })
             .Join(ExtractPageLabels(pdfDocument.DocumentStream),
-                doc => doc.Number,
-                label => label.Key,
-                (doc, label) => new TextDocumentPage(doc.Number, doc.Text, label.Value))
+                p => p.PageNumber,
+                l => l.Key,
+                (p, l) => new TextDocumentPage(p.PageNumber, p.Text, l.Value))
             .ToList();
 
         _logger.LogInformation("Successfully read {PageCount} pages of {DocumentName}.",
             pdf.NumberOfPages, pdfDocument.Name);
 
-        return Task.FromResult(new TextDocument(pdfDocument.Name, textDocumentPages, pdfDocument.Topic));
+        return Task.FromResult(new TextDocument(pdfDocument.Name, pages, pdfDocument.Topic));
     }
 
-    public IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
+    private IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
     {
         using var pdfMetadata = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
 
@@ -59,5 +69,10 @@ public class PdfTextReader : IPdfTextReader
         {
             throw new InvalidOperationException("Cannot read the PDF file because it is encrypted.", ex);
         }
+    }
+
+    private static bool BelongsToHeader(Page page, Word word)
+    {
+        return word.BoundingBox.Bottom >= (page.Height - (page.Height * ProportionOfPageBelongingToHeader));
     }
 }
