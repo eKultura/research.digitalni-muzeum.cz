@@ -23,7 +23,11 @@ public class PdfTextReader : IPdfTextReader
     {
         _logger.LogInformation("Attempting to open the memory stream for reading of {DocumentName}.", pdfDocument.Name);
 
-        using var pdf = OpenDocument(pdfDocument.DocumentStream);
+        using var memoryStream = new MemoryStream();
+        memoryStream.Write(pdfDocument.Document);
+        memoryStream.Position = 0;
+
+        using var pdf = OpenDocument(memoryStream);
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
@@ -31,12 +35,9 @@ public class PdfTextReader : IPdfTextReader
             .Select(p => new 
             {
                 PageNumber = p.Number,
-                Text = string.Join(DocumentReadingConstants.SpaceDelimiter,
-                    p.GetWords()
-                    .Where(w => !BelongsToHeader(p, w))
-                    .Select(w => w.Text))
+                Text = ExtractPageText(p)
             })
-            .Join(ExtractPageLabels(pdfDocument.DocumentStream),
+            .Join(ExtractPageLabels(memoryStream),
                 p => p.PageNumber,
                 l => l.Key,
                 (p, l) => new TextDocumentPage(p.PageNumber, p.Text, l.Value))
@@ -48,7 +49,18 @@ public class PdfTextReader : IPdfTextReader
         return Task.FromResult(new TextDocument(pdfDocument.Name, pages, pdfDocument.Topic));
     }
 
-    private IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
+
+    private static string ExtractPageText(Page page)
+    {
+        var pageWords = page.GetWords()
+            .Where(w => !BelongsToHeader(page, w))
+            .Select(w => w.Text);
+
+        return string.Join(DocumentReadingConstants.SpaceDelimiter, pageWords);
+                    
+    }
+
+    private static IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
     {
         using var pdfMetadata = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
 

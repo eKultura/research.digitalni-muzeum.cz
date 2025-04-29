@@ -28,7 +28,7 @@ public class PdfTextReaderTest
 
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Root Doc", memoryStream, "Sci-fi");
+        var pdfDocument = new PdfDocument("Root Doc", memoryStream.ToArray(), "Sci-fi");
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(pdfDocument));
@@ -46,7 +46,7 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Empty Doc", memoryStream, "Empty");
+        var pdfDocument = new PdfDocument("Empty Doc", memoryStream.ToArray(), "Empty");
 
         // Act
         var result = await _pdfReader.ReadTextAsync(pdfDocument);
@@ -74,7 +74,7 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream, "Fiction");
+        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream.ToArray(), "Fiction");
 
         // Act
         var result = await _pdfReader.ReadTextAsync(pdfDocument);
@@ -96,6 +96,21 @@ public class PdfTextReaderTest
             Assert.Equal(i + 1, textPage.Number);
             Assert.Equal(pages[i], result.Pages[i].Text);
         }
+    }
+
+    [Fact]
+    public async Task Bastard()
+    {
+        string path = "e:\\Osobne\\Knižky\\Hans-Hermann Hoppe - Democracy_ The God that Failed.pdf";
+        //string path = "e:\\Osobne\\Knižky\\The clean coder  a code of conduct for professional programmers by Martin, Robert C..pdf";
+
+        using var memoryStream = new MemoryStream();
+        memoryStream.Write(File.ReadAllBytes(path));
+        memoryStream.Position = 0;
+
+        var pdfDoc = new PdfDocument("Bastard", memoryStream.ToArray(), "Fiction");
+
+        var result = await _pdfReader.ReadTextAsync(pdfDoc);
     }
 
     private static byte[] BuildPdf(string[] pages)
