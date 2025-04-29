@@ -1,4 +1,26 @@
 # 📚 Project: Digital research of historical documents	
+*Revealing patterns, mapping the past, connecting knowledge.*
+
+Project **[Digital Research of Historical Documents](https://research.digitalni-muzeum.cz)** is part of the [eKultura](https://ekultura.eu) initiative and belongs to the activities under [Digitalni-muzeum.cz](https://digitalni-muzeum.cz).
+
+
+### Team Members:
+
+- 🌐 **Martin Baluch** — Full Stack Developer  
+  Responsible for complete system integration across frontend and backend.
+
+- 🎨 **Laura Baluchová** — Frontend and VR Developer  
+  Focuses on user interface, web design, and virtual reality components.
+
+- 💻 **Jakub Duch** — C# Developer  
+  Works on backend logic, NLP integration, and document management.
+
+- 🖥 **Petr Malina -aka- Ionno** — Data Analysis and Server Management  
+  Manages data infrastructure, server operations, and system stability.
+
+- 🛠 **Martin** — Strategy, Security, and Architecture  
+  Leads project planning, security standards, and digital research methodology.
+
 
 ## 🚀 Project Phases
 
