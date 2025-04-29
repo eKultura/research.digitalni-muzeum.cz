@@ -36,9 +36,6 @@
 | **ML.NET (C#)** | Integrated with .NET, easy for C# developers | Limited out-of-the-box models, training needed |
 | **Azure Cognitive Services (Cloud API)** | Very easy to start, OCR + NLP together | Requires internet connection, API costs money |
 
-- For MVP we prefer an easy, ready-to-use tool (spaCy or Azure).
-- Later we can switch to a more advanced tool (Stanford CoreNLP) if needed.
-
 
 
 ---
