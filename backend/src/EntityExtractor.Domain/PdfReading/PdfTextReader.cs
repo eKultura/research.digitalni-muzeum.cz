@@ -32,7 +32,7 @@ public class PdfTextReader : IPdfTextReader
         _logger.LogInformation("Starting reading process of the memory stream.");
 
         var pages = pdf.GetPages()
-            .Select(p => new 
+            .Select(p => new
             {
                 PageNumber = p.Number,
                 Text = ExtractPageText(p)
@@ -57,7 +57,7 @@ public class PdfTextReader : IPdfTextReader
             .Select(w => w.Text);
 
         return string.Join(DocumentReadingConstants.SpaceDelimiter, pageWords);
-                    
+
     }
 
     private static IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
