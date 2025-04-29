@@ -19,10 +19,27 @@
 - (Optional) Show PDF preview using iframe or PDF.js.
 
 ### 4. NLP Text Analysis (MAIN GOAL)
-- Run NLP analysis on each uploaded document:
-  - extract persons, places, organizations, dates
-  - save extracted entities linked to the document
-- Use a tool like spaCy or Stanford NLP (via API if needed).
+
+- Run basic NLP analysis on each uploaded document:
+  - extract entities: persons, places, organizations, dates
+  - save position information (for example: page number, paragraph number)
+- (Later) Add:
+  - indexing of processed texts for faster searching
+  - advanced filtering (find entities near certain words, by context)
+
+#### NLP tools we are considering:
+
+| Tool | Pros | Cons |
+|:---|:---|:---|
+| **spaCy (Python)** | Very fast, easy to use, many pre-trained models | Needs Python server, external API if used with C# |
+| **Stanford CoreNLP** | Extremely powerful, supports deep linguistic analysis | Runs on Java, needs wrapper (Stanford.NLP.NET) |
+| **ML.NET (C#)** | Integrated with .NET, easy for C# developers | Limited out-of-the-box models, training needed |
+| **Azure Cognitive Services (Cloud API)** | Very easy to start, OCR + NLP together | Requires internet connection, API costs money |
+
+- For MVP we prefer an easy, ready-to-use tool (spaCy or Azure).
+- Later we can switch to a more advanced tool (Stanford CoreNLP) if needed.
+
+
 
 ---
 
