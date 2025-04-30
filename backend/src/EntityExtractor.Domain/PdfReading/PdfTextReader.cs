@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Text;
+﻿using eKultura.EntityExtractor.Contracts;
+using Microsoft.Extensions.Logging;
+using PdfSharpCore.Pdf.IO;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Exceptions;
 using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
@@ -8,6 +10,8 @@ namespace eKultura.EntityExtractor.Domain.PdfReading;
 
 public class PdfTextReader : IPdfTextReader
 {
+    private const double ProportionOfPageBelongingToHeader = 0.1;
+
     private readonly ILogger<PdfTextReader> _logger;
 
     public PdfTextReader(ILogger<PdfTextReader> logger)
@@ -15,34 +19,52 @@ public class PdfTextReader : IPdfTextReader
         _logger = logger;
     }
 
-    public Task<PdfDocument> ReadTextAsync(MemoryStream stream)
+    public Task<TextDocument> ReadTextAsync(PdfDocument pdfDocument)
     {
-        _logger.LogInformation("Attempting to open the memory stream for reading.");
+        _logger.LogInformation("Attempting to open the memory stream for reading of {DocumentName}.", pdfDocument.Name);
 
-        using var pdf = OpenDocument(stream);
+        using var memoryStream = new MemoryStream();
+        memoryStream.Write(pdfDocument.Document);
+        memoryStream.Position = 0;
+
+        using var pdf = OpenDocument(memoryStream);
 
         _logger.LogInformation("Starting reading process of the memory stream.");
 
-        StringBuilder stringBuilder = new StringBuilder();
-        int pageCount = 0;
-        int wordCount = 0;
+        var pages = pdf.GetPages()
+            .Select(p => new
+            {
+                PageNumber = p.Number,
+                Text = ExtractPageText(p)
+            })
+            .Join(ExtractPageLabels(memoryStream),
+                p => p.PageNumber,
+                l => l.Key,
+                (p, l) => new TextDocumentPage(p.PageNumber, p.Text, l.Value))
+            .ToList();
 
-        foreach (var page in pdf.GetPages())
-        {
-            pageCount++;
+        _logger.LogInformation("Successfully read {PageCount} pages of {DocumentName}.",
+            pdf.NumberOfPages, pdfDocument.Name);
 
-            var wordsOnPage = page.GetWords().Select(w => w.Text);
-            wordCount += wordsOnPage.Count();
+        return Task.FromResult(new TextDocument(pdfDocument.Name, pages, pdfDocument.Topic));
+    }
 
-            string pageString = string.Join(PdfReadingConstants.SpaceDelimiter, wordsOnPage);
 
-            stringBuilder.Append(pageString + PdfReadingConstants.SpaceDelimiter);
-        }
+    private static string ExtractPageText(Page page)
+    {
+        var pageWords = page.GetWords()
+            .Where(w => !BelongsToHeader(page, w))
+            .Select(w => w.Text);
 
-        _logger.LogInformation("Successfully read {WordCount} words on {PageCount} pages of the pdf document.",
-            wordCount, pageCount);
+        return string.Join(DocumentReadingConstants.SpaceDelimiter, pageWords);
 
-        return Task.FromResult(new PdfDocument(pageCount, wordCount, stringBuilder.ToString().Trim()));
+    }
+
+    private static IEnumerable<KeyValuePair<int, string>> ExtractPageLabels(MemoryStream stream)
+    {
+        using var pdfMetadata = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+
+        return pdfMetadata.GetPageLabels();
     }
 
     private static PdfPigDocument OpenDocument(MemoryStream stream)
@@ -59,5 +81,10 @@ public class PdfTextReader : IPdfTextReader
         {
             throw new InvalidOperationException("Cannot read the PDF file because it is encrypted.", ex);
         }
+    }
+
+    private static bool BelongsToHeader(Page page, Word word)
+    {
+        return word.BoundingBox.Bottom >= (page.Height - (page.Height * ProportionOfPageBelongingToHeader));
     }
 }

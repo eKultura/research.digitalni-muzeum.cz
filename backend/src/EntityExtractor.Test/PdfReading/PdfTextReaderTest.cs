@@ -1,5 +1,7 @@
-﻿using eKultura.EntityExtractor.Domain.PdfReading;
+﻿using eKultura.EntityExtractor.Contracts;
+using eKultura.EntityExtractor.Domain.PdfReading;
 using Microsoft.Extensions.Logging.Abstractions;
+using PdfSharpCore.Pdf.IO;
 using System.Xml.Linq;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -26,8 +28,10 @@ public class PdfTextReaderTest
 
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Root Doc", memoryStream.ToArray(), "Sci-fi");
+
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(memoryStream));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(pdfDocument));
     }
 
     [Fact]
@@ -42,14 +46,16 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Empty Doc", memoryStream.ToArray(), "Empty");
+
         // Act
-        var result = await _pdfReader.ReadTextAsync(memoryStream);
+        var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(0, result.PageCount);
-        Assert.Equal(0, result.WordCount);
-        Assert.Empty(result.Text);
+        Assert.Equal(pdfDocument.Name, result.Name);
+        Assert.Equal(pdfDocument.Topic, result.Topic);
+        Assert.Empty(result.Pages);
     }
 
     [Theory]
@@ -59,23 +65,52 @@ public class PdfTextReaderTest
         // Arrange        
         using var memoryStream = new MemoryStream();
 
-        var words = pages.Select(p => p.Split(PdfReadingConstants.SpaceDelimiter)).SelectMany(p => p);
+        var words = pages.Select(p => p.Split(DocumentReadingConstants.SpaceDelimiter)).SelectMany(p => p);
         int wordCount = words.Count();
-        string text = string.Join(PdfReadingConstants.SpaceDelimiter, words);
+        string text = string.Join(DocumentReadingConstants.SpaceDelimiter, words);
 
         byte[] pdfDoc = BuildPdf(pages);
 
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
+        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream.ToArray(), "Fiction");
+
         // Act
-        var result = await _pdfReader.ReadTextAsync(memoryStream);
+        var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(pages.Length, result.PageCount);
-        Assert.Equal(wordCount, result.WordCount);
-        Assert.Equal(text, result.Text);
+        Assert.Equal(pdfDocument.Name, result.Name);
+        Assert.Equal(pdfDocument.Topic, result.Topic);
+
+        Assert.Equal(pages.Length, result.Pages.Count);
+
+        var resultPages = result.Pages;
+
+        for (int i = 0; i < resultPages.Count; i++)
+        {
+            var textPage = resultPages[i];
+
+            //PDF pages start from 1
+            Assert.Equal(i + 1, textPage.Number);
+            Assert.Equal(pages[i], result.Pages[i].Text);
+        }
+    }
+
+    [Fact]
+    public async Task Bastard()
+    {
+        string path = "e:\\Osobne\\Knižky\\Hans-Hermann Hoppe - Democracy_ The God that Failed.pdf";
+        //string path = "e:\\Osobne\\Knižky\\The clean coder  a code of conduct for professional programmers by Martin, Robert C..pdf";
+
+        using var memoryStream = new MemoryStream();
+        memoryStream.Write(File.ReadAllBytes(path));
+        memoryStream.Position = 0;
+
+        var pdfDoc = new PdfDocument("Bastard", memoryStream.ToArray(), "Fiction");
+
+        var result = await _pdfReader.ReadTextAsync(pdfDoc);
     }
 
     private static byte[] BuildPdf(string[] pages)
