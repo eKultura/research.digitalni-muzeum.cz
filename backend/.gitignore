@@ -9,6 +9,9 @@ obj/
 *.suo
 *.cache
 *.ide
+*.db
+*.wsuo
+
 
 # NuGet / Restore
 project.assets.json

@@ -1,5 +1,6 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using eKultura.EntityExtractor.Models;
+using eKultura.EntityExtractor.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 
@@ -14,7 +15,7 @@ public class DocumentController : ControllerBase
 
     [HttpPost]
     [Route("upload")]
-    public Task<IActionResult> Upload(IFormFile file)
+    public Task<IActionResult> Upload([FromForm] UploadFileRequest request)
     {
         // Mock implementation
         var mockedTokens = new List<IEnumerable<string>>
@@ -29,7 +30,7 @@ public class DocumentController : ControllerBase
             }
         };
 
-        var tokenizedFile = new TokenizedFile(FileId.Create(), file.FileName, mockedTokens);
+        var tokenizedFile = new TokenizedFile(FileId.Create(), request.File.FileName, mockedTokens);
 
         _files.AddOrUpdate(tokenizedFile.FileId.Id, tokenizedFile, (id, file) => file);
 
