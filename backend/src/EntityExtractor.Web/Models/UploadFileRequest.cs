@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace eKultura.EntityExtractor.Web.Models;
-public record UploadFileRequestModel(IFormFile File, string Topic);
+
+public record UploadFileRequest(IFormFile File, string Topic);

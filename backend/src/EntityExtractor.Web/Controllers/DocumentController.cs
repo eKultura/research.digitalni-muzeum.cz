@@ -15,7 +15,7 @@ public class DocumentController : ControllerBase
 
     [HttpPost]
     [Route("upload")]
-    public Task<IActionResult> Upload([FromForm] UploadFileRequestModel request)
+    public Task<IActionResult> Upload([FromForm] UploadFileRequest request)
     {
         // Mock implementation
         var mockedTokens = new List<IEnumerable<string>>
