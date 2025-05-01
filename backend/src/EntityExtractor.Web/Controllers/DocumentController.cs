@@ -1,5 +1,6 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using eKultura.EntityExtractor.Models;
+using eKultura.EntityExtractor.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 
@@ -14,7 +15,7 @@ public class DocumentController : ControllerBase
 
     [HttpPost]
     [Route("upload")]
-    public Task<IActionResult> Upload([FromForm] UploadFileRequest request)
+    public Task<IActionResult> Upload([FromForm] UploadFileRequestModel request)
     {
         // Mock implementation
         var mockedTokens = new List<IEnumerable<string>>
