@@ -11,7 +11,8 @@ public static class PdfSharpDocumentExtensions
     /// Returns key-value pairs for physical and label page numbers.
     /// </summary>
     /// <param name="document">A PDF Sharp Document</param>
-    /// <returns>A collection of physical page numbers and their labels</returns>
+    /// <returns>A collection of physical page numbers and their labels. If no labels are being present,
+    /// the standard page numbers are returned.</returns>
     public static IEnumerable<KeyValuePair<int, string>> GetPageLabels(this PdfSharpDocument document)
     {
         var pageLabelsDictionary = document.Internals.Catalog.Elements.GetDictionary(DocumentReadingConstants.PageLabelsElementName);
@@ -19,7 +20,10 @@ public static class PdfSharpDocumentExtensions
 
         if (pageLabelsDictionary is null || numberTree is null)
         {
-            return Enumerable.Empty<KeyValuePair<int, string>>();
+            var labelsMatchingRealPages = Enumerable.Range(DocumentReadingConstants.MinPdfPageNumber, document.PageCount)
+                .Select(n => KeyValuePair.Create(n, n.ToString()));
+
+            return labelsMatchingRealPages;
         }
 
         var segments = GetNumericSegments(numberTree.Elements)

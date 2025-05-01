@@ -6,8 +6,8 @@ public static class NumberUtils
 {
     private const int EnglishAlphabetCharacterCount = 26;
 
-    private static readonly string[] RomanThousands = new[] { "", "M", "MM", "MMM" };
-    private static readonly string[] RomanHundreds = new[] { "", "C", "CC", "CCC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
+    private static readonly string[] RomanThousands = new[] { "", "M", "MM", "MMM", "MMMM" };
+    private static readonly string[] RomanHundreds = new[] { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
     private static readonly string[] RomanTens = new[] { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
     private static readonly string[] RomanOnes = new[] { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
 
@@ -18,6 +18,11 @@ public static class NumberUtils
     /// <returns>A string representing integer in a roman form. Empty string if the number is not a positive integer.</returns>
     public static string ToRoman(int number)
     {
+        if (number <= 0)
+        {
+            throw new ArgumentOutOfRangeException($"{number} cannot be converted to roman number.");
+        }
+
         return RomanThousands[number / 1000] + RomanHundreds[(number % 1000) / 100]
             + RomanTens[(number % 100) / 10] + RomanOnes[number % 10];
     }
