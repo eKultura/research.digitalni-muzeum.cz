@@ -19,7 +19,7 @@ export default function FileUploader() {
       formData.append('file', file)
     }
     try {
-      const response = await axios.post(`http://localhost:8080/api/v1/documents/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } })
+      const response = await axios.post(import.meta.env.VITE_DOCUMENT_UPLOAD_API_URL, formData, { headers: { "Content-Type": "multipart/form-data" } })
       console.log(response);
      
     } catch (error) {
