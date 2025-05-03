@@ -1,0 +1,6 @@
+services:
+  entityextractor.web:
+    image: ${DOCKER_REGISTRY-}entityextractorweb
+    build:
+      context: .
+      dockerfile: EntityExtractor.Web/Dockerfile
