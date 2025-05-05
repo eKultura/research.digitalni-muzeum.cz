@@ -1,6 +1,24 @@
+version: '3.8'
+
 services:
   entityextractor.web:
-    image: ${DOCKER_REGISTRY-}entityextractorweb
+    image: entityextractorweb:latest
     build:
       context: .
       dockerfile: EntityExtractor.Web/Dockerfile
+    networks:
+      - entityextractor-network
+
+
+networks:
+  entityextractor-network:
+    driver: bridge
+
+
+volumes:
+  entityextractor-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PROJECT_STORAGE_ROOT:-./storage}
