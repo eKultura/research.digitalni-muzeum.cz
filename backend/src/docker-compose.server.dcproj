@@ -10,6 +10,7 @@
     <DockerServiceName>entityextractor.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include=".env" />
     <None Include="docker-compose.server.override.yml">
       <DependentUpon>docker-compose.server.yml</DependentUpon>
     </None>

@@ -2,23 +2,19 @@ version: '3.8'
 
 services:
   entityextractor.web:
-    image: entityextractorweb:latest
     build:
       context: .
-      dockerfile: EntityExtractor.Web/Dockerfile
+      dockerfile: /EntityExtractor.Web/Dockerfile
     networks:
       - entityextractor-network
-
+    ports:
+      - ${HTTPS_PORT:-8081}:8081
+    volumes:
+      - ${DOCUMENT_STORAGE_PATH}:/document-storage-path
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - DOCUMENT_STORAGE_PATH=/document-storage-path
 
 networks:
   entityextractor-network:
     driver: bridge
-
-
-volumes:
-  entityextractor-storage:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PROJECT_STORAGE_ROOT:-./storage}
