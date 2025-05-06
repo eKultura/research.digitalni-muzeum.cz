@@ -10,10 +10,10 @@
     <DockerServiceName>entityextractor.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
+    <None Include="docker-compose.server.override.yml">
+      <DependentUpon>docker-compose.server.yml</DependentUpon>
     </None>
-    <None Include="docker-compose.yml" />
+    <None Include="docker-compose.server.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>
