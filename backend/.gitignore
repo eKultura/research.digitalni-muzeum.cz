@@ -16,3 +16,6 @@ obj/
 # NuGet / Restore
 project.assets.json
 *.nuget.cache
+
+# Docker Compose environment files
+*.env
