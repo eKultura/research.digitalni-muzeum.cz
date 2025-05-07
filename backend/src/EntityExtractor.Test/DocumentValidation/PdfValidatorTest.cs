@@ -1,5 +1,6 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using eKultura.EntityExtractor.Domain.DocumentValidation;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace eKultura.EntityExtractor.Test.DocumentValidation;
 
 public class PdfValidatorTest
 {
-    private readonly PdfValidator _pdfValidator = new();
+    private readonly PdfValidator _pdfValidator = new(NullLogger<PdfValidator>.Instance);
 
     [Fact]
     public void IsValid_WrongExtension_ReturnsFalse()
@@ -27,5 +28,20 @@ public class PdfValidatorTest
         Assert.False(isValid);
     }
 
+    [Fact]
+    public void IsValid_NoPdfSignature_ReturnsFalse()
+    {
+        // Arrange
+        string text = "This is absolutely not a PDF document";
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
 
+        var document = new PdfDocument("test.pdf", bytes, "Computer science");
+
+        // Act
+        bool isValid = _pdfValidator.IsValid(document);
+
+        // Assert
+        Assert.False(isValid);
+
+    }
 }

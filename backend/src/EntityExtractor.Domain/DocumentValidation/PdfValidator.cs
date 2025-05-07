@@ -1,10 +1,18 @@
 ﻿using eKultura.EntityExtractor.Contracts;
+using Microsoft.Extensions.Logging;
 
 namespace eKultura.EntityExtractor.Domain.DocumentValidation;
 
 public class PdfValidator
 {
     private const string PdfExtension = ".pdf";
+
+    private readonly ILogger<PdfValidator> _logger;
+
+    public PdfValidator(ILogger<PdfValidator> logger)
+    {
+        _logger = logger;
+    }
 
     public bool IsValid(PdfDocument pdfDocument)
     {
@@ -15,7 +23,19 @@ public class PdfValidator
     {
         bool hasPdfExtension = Path.GetExtension(document.Name).Equals(PdfExtension, StringComparison.OrdinalIgnoreCase);
 
-        return hasPdfExtension && HasPdfSignature(document.Document);
+        if (!hasPdfExtension)
+        {
+            _logger.LogWarning("The uploaded file '{FileName}' does not have a pdf extension.", document.Name);
+            return false;
+        }
+
+        if (!HasPdfSignature(document.Document))
+        {
+            _logger.LogWarning("The uploaded file '{FileName}' is not a PDF document.", document.Name);
+            return false;
+        }
+
+        return true;
     }
 
 
