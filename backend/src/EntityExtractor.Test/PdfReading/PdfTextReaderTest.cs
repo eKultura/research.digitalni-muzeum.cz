@@ -1,7 +1,6 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using eKultura.EntityExtractor.Domain.PdfReading;
 using Microsoft.Extensions.Logging.Abstractions;
-using PdfSharpCore.Pdf.IO;
 using System.Xml.Linq;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -69,7 +68,7 @@ public class PdfTextReaderTest
         int wordCount = words.Count();
         string text = string.Join(DocumentReadingConstants.SpaceDelimiter, words);
 
-        byte[] pdfDoc = BuildPdf(pages);
+        byte[] pdfDoc = PdfTestUtils.BuildPdf(pages);
 
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
@@ -96,37 +95,6 @@ public class PdfTextReaderTest
             Assert.Equal(i + 1, textPage.Number);
             Assert.Equal(pages[i], result.Pages[i].Text);
         }
-    }
-
-    [Fact]
-    public async Task Bastard()
-    {
-        string path = "e:\\Osobne\\Knižky\\Hans-Hermann Hoppe - Democracy_ The God that Failed.pdf";
-        //string path = "e:\\Osobne\\Knižky\\The clean coder  a code of conduct for professional programmers by Martin, Robert C..pdf";
-
-        using var memoryStream = new MemoryStream();
-        memoryStream.Write(File.ReadAllBytes(path));
-        memoryStream.Position = 0;
-
-        var pdfDoc = new PdfDocument("Bastard", memoryStream.ToArray(), "Fiction");
-
-        var result = await _pdfReader.ReadTextAsync(pdfDoc);
-    }
-
-    private static byte[] BuildPdf(string[] pages)
-    {
-        using PdfDocumentBuilder builder = new PdfDocumentBuilder();
-
-        foreach (string page in pages)
-        {
-            var pdfPageBuilder = builder.AddPage(PageSize.A4);
-
-            var font = builder.AddStandard14Font(Standard14Font.TimesRoman);
-
-            pdfPageBuilder.AddText(page, 12, new PdfPoint(25, 700), font);
-        }
-
-        return builder.Build();
     }
 
     public static IEnumerable<object[]> GetDocuments()
