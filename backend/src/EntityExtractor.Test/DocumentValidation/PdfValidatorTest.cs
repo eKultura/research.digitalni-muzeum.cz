@@ -42,6 +42,20 @@ public class PdfValidatorTest
 
         // Assert
         Assert.False(isValid);
+    }
 
+    [Fact]
+    public void IsValid_ValidPdfDocument_ReturnsTrue()
+    {
+        // Arrange
+        var pdf = PdfTestUtils.BuildPdf(["This is a valid pdf document"]);
+
+        var pdfDocument = new PdfDocument("test.pdf", pdf, "History");
+
+        // Act
+        bool isValid = _pdfValidator.IsValid(pdfDocument);
+
+        // Assert
+        Assert.True(isValid);
     }
 }
