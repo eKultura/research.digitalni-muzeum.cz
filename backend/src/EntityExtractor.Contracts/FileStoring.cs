@@ -1,7 +1,7 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using System.IO.Abstractions;
 
-namespace eKultura.EntityExtractor.Domain.PdfReading;
+namespace eKultura.EntityExtractor.Domain;
 public class FileStoring : IFileStoring
 {
     private readonly IFileSystem _fileSystem;

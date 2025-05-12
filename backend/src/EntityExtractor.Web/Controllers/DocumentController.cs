@@ -108,17 +108,4 @@ public class DocumentController : ControllerBase
 
         return Ok(new { file = file.FileName, size = file.Length });
     }
-    //[HttpPost]
-    //public ActionResult<IEnumerable<FileModel>> UploadFiles()
-    //{
-
-    //}
-    //[HttpPost]
-    //public ActionResult<FileModel> Post([FromBody] FileModel newProduct)
-    //{
-    //    newProduct.Id = _products.Count + 1;
-    //    _products.Add(newProduct);
-    //    return CreatedAtAction(nameof(Get), new { id = newProduct.Id }, newProduct);
-    //}
-
 }

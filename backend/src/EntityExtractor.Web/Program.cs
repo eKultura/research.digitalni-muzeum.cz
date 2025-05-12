@@ -1,5 +1,5 @@
 using eKultura.EntityExtractor.Contracts;
-using eKultura.EntityExtractor.Domain.PdfReading;
+using eKultura.EntityExtractor.Domain;
 using System.IO.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
