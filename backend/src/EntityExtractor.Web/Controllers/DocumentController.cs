@@ -30,7 +30,7 @@ public class DocumentController : ControllerBase
             }
         };
 
-        var tokenizedFile = new TokenizedFile(FileId.Create(), request.File.FileName, mockedTokens);
+        var tokenizedFile = new TokenizedFile(FileId.Create(), request.PDFFile.FileName, mockedTokens);
 
         _files.AddOrUpdate(tokenizedFile.FileId.Id, tokenizedFile, (id, file) => file);
 

@@ -1,7 +1,20 @@
+using eKultura.EntityExtractor.Contracts;
+using eKultura.EntityExtractor.Domain.PdfReading;
+using System.IO.Abstractions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddSingleton<IFileSystem, FileSystem>();
+builder.Services.AddScoped<IFileStoring>(provider =>
+{
+    var fileSystem = provider.GetRequiredService<IFileSystem>();
+    var baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "StoredFiles");
+
+    return new FileStoring(fileSystem, baseFolder);
+});
+    
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

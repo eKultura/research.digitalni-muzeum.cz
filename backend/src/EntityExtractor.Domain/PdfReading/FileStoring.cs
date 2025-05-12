@@ -1,7 +1,7 @@
 ﻿using eKultura.EntityExtractor.Contracts;
 using System.IO.Abstractions;
 
-namespace eKultura.EntityExtractor.Domain.FileStoring;
+namespace eKultura.EntityExtractor.Domain.PdfReading;
 public class FileStoring : IFileStoring
 {
     private readonly IFileSystem _fileSystem;
@@ -12,6 +12,7 @@ public class FileStoring : IFileStoring
         _fileSystem = fileSystem;
         _baseFolder = baseFolder;
     }
+
     public FileStoringDTO StoreFile(string topic, byte[] pdfFile)
     {
         if (string.IsNullOrEmpty(topic))
@@ -19,7 +20,7 @@ public class FileStoring : IFileStoring
             throw new ArgumentException("Topic field is required.");
         }
 
-        if(pdfFile == null || pdfFile.Length == 0)
+        if (pdfFile == null || pdfFile.Length == 0)
         {
             throw new ArgumentException("Pdf file has to be selected before storing.");
         }

@@ -2,4 +2,4 @@
 
 namespace eKultura.EntityExtractor.Web.Models;
 
-public record UploadFileRequest(IFormFile File, string Topic);
+public record UploadFileRequest(IFormFile PDFFile, string Topic);
