@@ -19,10 +19,19 @@ public class FileStoring : IFileStoring
             throw new ArgumentException("Topic field is required.");
         }
 
-        if(pdfFile == null)
+        if(pdfFile == null || pdfFile.Length == 0)
         {
             throw new ArgumentException("Pdf file has to be selected before storing.");
         }
+
+        string projectFolder = _fileSystem.Path.Combine(_baseFolder, topic);
+        _fileSystem.Directory.CreateDirectory(projectFolder);
+
+        string fileName = $"document_{DateTime.UtcNow:yyyyMMddHHmmssfff}.pdf"; // este otestuj
+
+        string filePath = _fileSystem.Path.Combine(projectFolder, fileName);
+
+        _fileSystem.File.WriteAllBytes(filePath, pdfFile);
 
         return new FileStoringDTO
         {
