@@ -28,7 +28,7 @@ public class FileStoring : IFileStoring
         string projectFolder = _fileSystem.Path.Combine(_baseFolder, topic);
         _fileSystem.Directory.CreateDirectory(projectFolder);
 
-        string fileName = $"document_{DateTime.UtcNow:yyyyMMddHHmmssfff}.pdf"; // este otestuj
+        string fileName = $"document_{DateTime.UtcNow:yyyyMMddHHmmssfff}.pdf";
 
         string filePath = _fileSystem.Path.Combine(projectFolder, fileName);
 
