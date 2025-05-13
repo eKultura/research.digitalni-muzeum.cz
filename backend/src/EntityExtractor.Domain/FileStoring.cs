@@ -2,7 +2,8 @@
 using System.IO.Abstractions;
 
 namespace eKultura.EntityExtractor.Domain;
-public class FileStoring : IFileStoring
+
+public class FileStoring : IFileStorage
 {
     private readonly IFileSystem _fileSystem;
     private readonly string _baseFolder;
@@ -13,7 +14,7 @@ public class FileStoring : IFileStoring
         _baseFolder = baseFolder;
     }
 
-    public FileStoringDTO StoreFile(string topic, byte[] pdfFile)
+    public async Task<PdfDocument> StoreAsync(RawFile rawFile)
     {
         if (string.IsNullOrEmpty(topic))
         {
@@ -28,17 +29,13 @@ public class FileStoring : IFileStoring
         string projectFolder = _fileSystem.Path.Combine(_baseFolder, topic);
         _fileSystem.Directory.CreateDirectory(projectFolder);
 
-        string fileName = $"document_{DateTime.UtcNow:yyyyMMddHHmmssfff}.pdf";
+        
+        string documentId = $"{Guid.NewGuid().ToString("N")}.pdf";
 
-        string filePath = _fileSystem.Path.Combine(projectFolder, fileName);
+        string filePath = _fileSystem.Path.Combine(projectFolder, documentId);
 
         _fileSystem.File.WriteAllBytes(filePath, pdfFile);
 
-        return new FileStoringDTO
-        {
-            Project = topic,
-            PdfFile = pdfFile,
-            CreatedAt = DateTime.Now
-        };
+        return new PdfDocument(documentId, rawFile.Bytes, rawFile.Project, rawFile.Name);
     }
 }

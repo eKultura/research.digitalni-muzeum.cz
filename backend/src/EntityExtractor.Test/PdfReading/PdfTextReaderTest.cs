@@ -28,7 +28,7 @@ public class PdfTextReaderTest
 
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Root Doc", memoryStream.ToArray(), "Sci-fi");
+        var pdfDocument = new PdfDocument("RootDoc", memoryStream.ToArray(), "Sci-fi", "file1.pdf");
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pdfReader.ReadTextAsync(pdfDocument));
@@ -46,15 +46,15 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Empty Doc", memoryStream.ToArray(), "Empty");
+        var pdfDocument = new PdfDocument("Empty Doc", memoryStream.ToArray(), "Empty", "file1.pdf");
 
         // Act
         var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(pdfDocument.Name, result.Name);
-        Assert.Equal(pdfDocument.Topic, result.Topic);
+        Assert.Equal(pdfDocument.DocumentId, result.Name);
+        Assert.Equal(pdfDocument.Project, result.Topic);
         Assert.Empty(result.Pages);
     }
 
@@ -74,15 +74,15 @@ public class PdfTextReaderTest
         await memoryStream.WriteAsync(pdfDoc);
         memoryStream.Position = 0;
 
-        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream.ToArray(), "Fiction");
+        var pdfDocument = new PdfDocument("Important doc.pdf", memoryStream.ToArray(), "Fiction", "file1");
 
         // Act
         var result = await _pdfReader.ReadTextAsync(pdfDocument);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(pdfDocument.Name, result.Name);
-        Assert.Equal(pdfDocument.Topic, result.Topic);
+        Assert.Equal(pdfDocument.DocumentId, result.Name);
+        Assert.Equal(pdfDocument.Project, result.Topic);
 
         Assert.Equal(pages.Length, result.Pages.Count);
 
@@ -108,7 +108,7 @@ public class PdfTextReaderTest
         memoryStream.Write(File.ReadAllBytes(path));
         memoryStream.Position = 0;
 
-        var pdfDoc = new PdfDocument("Bastard", memoryStream.ToArray(), "Fiction");
+        var pdfDoc = new PdfDocument("Bastard", memoryStream.ToArray(), "Fiction", "file1");
 
         var result = await _pdfReader.ReadTextAsync(pdfDoc);
     }

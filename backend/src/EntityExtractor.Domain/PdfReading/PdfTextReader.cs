@@ -21,7 +21,7 @@ public class PdfTextReader : IPdfTextReader
 
     public Task<TextDocument> ReadTextAsync(PdfDocument pdfDocument)
     {
-        _logger.LogInformation("Attempting to open the memory stream for reading of {DocumentName}.", pdfDocument.Name);
+        _logger.LogInformation("Attempting to open the memory stream for reading of {DocumentName}.", pdfDocument.DocumentId);
 
         using var memoryStream = new MemoryStream();
         memoryStream.Write(pdfDocument.Document);
@@ -44,9 +44,9 @@ public class PdfTextReader : IPdfTextReader
             .ToList();
 
         _logger.LogInformation("Successfully read {PageCount} pages of {DocumentName}.",
-            pdf.NumberOfPages, pdfDocument.Name);
+            pdf.NumberOfPages, pdfDocument.DocumentId);
 
-        return Task.FromResult(new TextDocument(pdfDocument.Name, pages, pdfDocument.Topic));
+        return Task.FromResult(new TextDocument(pdfDocument.DocumentId, pages, pdfDocument.Project));
     }
 
 

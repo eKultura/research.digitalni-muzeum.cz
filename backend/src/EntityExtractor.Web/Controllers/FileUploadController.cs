@@ -9,9 +9,9 @@ namespace eKultura.EntityExtractor.Web.Controllers;
 [ApiController]
 public class FileUploadController : ControllerBase
 {
-    private readonly IFileStoring _fileStorageService;
+    private readonly IFileStorage _fileStorageService;
 
-    public FileUploadController(IFileStoring fileStorageService)
+    public FileUploadController(IFileStorage fileStorageService)
     {
         _fileStorageService = fileStorageService;
     }

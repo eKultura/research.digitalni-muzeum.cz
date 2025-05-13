@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
-builder.Services.AddScoped<IFileStoring>(provider =>
+builder.Services.AddScoped<IFileStorage, FileStoring>(provider =>
 {
     var fileSystem = provider.GetRequiredService<IFileSystem>();
     var baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "StoredFiles");
