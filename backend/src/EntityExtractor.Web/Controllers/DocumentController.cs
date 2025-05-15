@@ -14,6 +14,10 @@ public class DocumentController : ControllerBase
     private static readonly ConcurrentDictionary<string, TokenizedFile> _files = new();
 
     [HttpPost]
+    [Route("uploadd")]
+    public Task<>
+
+    [HttpPost]
     [Route("upload")]
     public Task<IActionResult> Upload([FromForm] UploadFileRequest request)
     {

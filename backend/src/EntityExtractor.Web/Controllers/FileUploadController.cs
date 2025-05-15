@@ -17,17 +17,18 @@ public class FileUploadController : ControllerBase
     }
 
     [HttpPost("upload")]
-    public async Task<IActionResult> Upload([FromForm] UploadFileRequest request)
+    public async Task<IActionResult> Upload([FromForm] RawFile rawFile)
     {
-        if (request.PDFFile == null || request.PDFFile.Length == 0)
+        if (rawFile.Bytes == null || rawFile.Bytes.Length == 0)
+        {
             return BadRequest("PDF file is required.");
+        }
 
-        using var memoryStream = new MemoryStream();
-        await request.PDFFile.CopyToAsync(memoryStream);
+        using var memoryStream = new MemoryStream(rawFile.Bytes);
 
-        var result = _fileStorageService.StoreFile(request.Topic, memoryStream.ToArray());
+        var result = await _fileStorageService.StoreAsync(rawFile);
 
-        return Ok(result);
+        return Created();
     }
 
 }
