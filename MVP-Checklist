@@ -1,0 +1,34 @@
+# ✅ MVP Checklist: Digital Research of Historical Documents
+
+## 1. Upload System
+- [ ] User can upload one or more PDF files.
+- [ ] User can select an existing project folder or create a new one.
+- [ ] Uploaded files are saved correctly on the server.
+
+## 2. Metadata Management
+- [ ] Metadata (file name, upload time, project) is saved in the database.
+- [ ] Uploaded documents are correctly linked to the selected project.
+
+## 3. Document Display
+- [ ] User can see a list of uploaded documents for each project.
+- [ ] User can download the original PDF.
+- [ ] (Optional) PDF preview is available via iframe or PDF.js.
+
+## 4. NLP Text Analysis (Main Goal)
+- [ ] NLP analysis runs automatically after upload.
+- [ ] Entities (persons, places, organizations, dates) are extracted.
+- [ ] Position information is saved (page number, paragraph number).
+
+## 5. Stability and Minimal UX
+- [ ] Upload errors are handled (wrong file type, too big file, etc.).
+- [ ] Basic error messages are shown to the user.
+- [ ] User can easily understand and navigate the system.
+
+## 6. Documentation (internal)
+- [ ] README file explains how the system works (briefly).
+- [ ] Basic installation/setup guide for developers is ready.
+
+---
+
+# 🛑 If any point is missing → MVP is NOT ready.
+# 🏁 If all points are checked → MVP is ready for testing and first release.
