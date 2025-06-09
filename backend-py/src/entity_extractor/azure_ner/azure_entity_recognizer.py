@@ -1,7 +1,7 @@
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 
-from azure.azure_configuration import AzureConfiguration
+from azure_ner.azure_configuration import AzureConfiguration
 from contracts.ner.entity_recognizer import EntityRecognizer
 from contracts.text_document import TextDocument
 
