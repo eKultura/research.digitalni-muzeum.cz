@@ -1,3 +1,4 @@
+import string
 from typing import List
 
 from pydantic.dataclasses import dataclass
@@ -7,4 +8,4 @@ from pydantic.dataclasses import dataclass
 class NamedEntity:
     name: str
     type: str
-    ocurrences: List[string]
+    occurrences: List[string]
