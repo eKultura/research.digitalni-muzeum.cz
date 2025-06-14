@@ -1,8 +1,6 @@
-from dataclasses import dataclass
+from pydantic.v1 import BaseSettings
 
 
-@dataclass
-class AzureConfiguration:
-
+class AzureConfiguration(BaseSettings):
     endpoint: str
     api_key: str
